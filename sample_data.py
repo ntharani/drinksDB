@@ -23,12 +23,12 @@ session = DBSession()
 def populate_drink_family(item):
     element = DrinkFamily(name = item)
     session.add(element)
-    # session.commit()
+    session.commit()
 
 def populate_beer(item):
     element = DrinkSubType(name = item, drink_family = DrinkFamily(name="Beer"))
     session.add(element)
-    # session.commit()
+    session.commit()
 
 def populate_ale(item):
     element = Drink(
@@ -37,7 +37,7 @@ def populate_ale(item):
         description = item["description"]
         )
     session.add(element)
-    # session.commit()
+    session.commit()
 
 
 def populate_db():
