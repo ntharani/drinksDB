@@ -67,6 +67,12 @@ def deleteDrinkSubType(drink_familyURL_id, type_id):
 #Show drink subtype brands
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/')
 def showDrinkList(drink_familyURL_id, type_id):
+    drinks = session.query(DrinkFamily).add_columns(DrinkFamily.name, DrinkFamily.id).order_by(asc(DrinkFamily.name))
+    drinklist = session.query(Drink).filter_by(drink_subtype_id = type_id ).add_columns(Drink.name, Drink.id, Drink.description).order_by(asc(Drink.name))    
+    for drink in drinklist:
+        print(drink)
+    return render_template('drink_list_home.html', drinks = drinks, drinklist = drinklist)
+    
     return "SHOW Drink Family SubType Drink List Route!"
 
 #Create a new drink subtype item
