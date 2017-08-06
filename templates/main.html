@@ -28,6 +28,20 @@
 
         <hr>
 
+        <div class = "flash">
+		    {% with messages = get_flashed_messages() %}
+                {% if messages %}
+          
+                    <ul>
+                    {% for message in messages %}
+                        <div class="notification is-primary">{{ message }}</div>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+
+        </div>
+        <br>
         <div class="columns">
 
             <div class="column is-one-third">

@@ -19,15 +19,23 @@ session = DBSession()
 @app.route('/')
 @app.route('/drinks/')
 def showDrinks():
-  drinks = session.query(DrinkFamily).add_columns(DrinkFamily.name, DrinkFamily.id).order_by(asc(DrinkFamily.name))
-  print(drinks)
+    drinks = session.query(DrinkFamily).add_columns(DrinkFamily.name, DrinkFamily.id).order_by(asc(DrinkFamily.name))
+    print(drinks)
 #   return "SHOW Drink Family Route!"
-  return render_template('drink_family_home.html', drinks = drinks)
+    return render_template('drink_family_home.html', drinks = drinks)
 
 #Create a new drink family
 @app.route('/drinks/new/', methods=['GET','POST'])
 def newDrink():
-    return "NEW Drink Family Route!"
+    if request.method == 'POST':
+      newDrinkFamily = DrinkFamily(name = request.form['name'])
+      session.add(newDrinkFamily)
+      flash('New Drink Family %s Successfully Created' % newDrinkFamily.name)
+      session.commit()
+      return redirect(url_for('showDrinks'))
+    else:
+        return render_template('new_drink_family.html')
+    # return "NEW Drink Family Route!"
 
 #Edit a drink family
 @app.route('/drinks/<int:drink_familyURL_id>/edit/', methods = ['GET', 'POST'])
@@ -101,6 +109,6 @@ def showDrinkListDetail(drink_familyURL_id, type_id, drink_id):
 
 
 if __name__ == '__main__':
-  app.secret_key = 'super_secret_key'
+  app.secret_key = 'super_seotnhoenuhoeanuhoaenuh  au3242134luoaecblecret_key'
   app.debug = True
   app.run(host = '0.0.0.0', port = 5000)
