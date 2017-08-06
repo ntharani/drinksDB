@@ -27,3 +27,16 @@
     </a>
     {% endfor %}
 {% endblock %}
+
+{% block context %}
+    Drill Down or Add a New Sub Drink Type
+{% endblock %}
+{% block context_action %}
+                    <div class="level-right">
+                        <a class="level-item" href="/drinks/{{action}}/new">
+                            <span class="icon fsd-head">
+                            <i class="fa fa-plus"></i>
+                            </span>
+                        </a>
+                    </div>
+{% endblock %}

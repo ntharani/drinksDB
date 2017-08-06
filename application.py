@@ -28,11 +28,11 @@ def showDrinks():
 @app.route('/drinks/new/', methods=['GET','POST'])
 def newDrink():
     if request.method == 'POST':
-      newDrinkFamily = DrinkFamily(name = request.form['name'])
-      session.add(newDrinkFamily)
-      flash('New Drink Family %s Successfully Created' % newDrinkFamily.name)
-      session.commit()
-      return redirect(url_for('showDrinks'))
+        newDrinkFamily = DrinkFamily(name = request.form['name'])
+        session.add(newDrinkFamily)
+        flash('New Drink Family %s Successfully Created' % newDrinkFamily.name)
+        session.commit()
+        return redirect(url_for('showDrinks'))
     else:
         return render_template('new_drink_family.html')
     # return "NEW Drink Family Route!"
@@ -52,15 +52,25 @@ def deleteDrink(drink_familyURL_id):
 def showDrinkSubType(drink_familyURL_id):
     drinks = session.query(DrinkFamily).add_columns(DrinkFamily.name, DrinkFamily.id).order_by(asc(DrinkFamily.name))
     subdrinks = session.query(DrinkSubType).filter_by(drink_family_id = drink_familyURL_id ).add_columns(DrinkSubType.name, DrinkSubType.id, DrinkSubType.drink_family_id).order_by(asc(DrinkSubType.name))    
+    action = drink_familyURL_id
     for subdrink in subdrinks:
         print(subdrink)
-    return render_template('drink_subtype_home.html', drinks = drinks, subdrinks = subdrinks)
+    return render_template('drink_subtype_home.html', drinks = drinks, subdrinks = subdrinks, action = action)
     # return "SHOW Drink Family SubType Route!"
      
 #Create a new drink subtype item
 @app.route('/drinks/<int:drink_familyURL_id>/new/',methods=['GET','POST'])
 def newDrinkSubType(drink_familyURL_id):
-    return "NEW Drink Family Subtype Route!"
+    parent_family = session.query(DrinkFamily).filter_by(id = drink_familyURL_id).first()
+    if request.method == 'POST':
+        newSubDrinkFamily = DrinkSubType(name = request.form['name'], drink_family_id = drink_familyURL_id, drink_family = parent_family)
+        session.add(newSubDrinkFamily)
+        flash('New Drink Family %s Successfully Created' % newSubDrinkFamily.name)
+        session.commit()
+        return redirect(url_for('showDrinkSubType', drink_familyURL_id = drink_familyURL_id))
+    else:
+        return render_template('new_drink_sub_family.html')
+    # return "NEW Drink Family Subtype Route!"
 
 #Edit a drinkSubType
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/edit', methods=['GET','POST'])
