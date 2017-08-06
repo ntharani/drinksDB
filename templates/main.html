@@ -24,7 +24,7 @@
                 bulma
             </a> -->
                 {% for drink in drinks %}
-                <a class="panel-block">
+                <a class="panel-block" href=drinks/{{ drink.id }}>
                     {{ drink.name }}
                 </a>
                 {% endfor %}

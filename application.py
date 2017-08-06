@@ -19,7 +19,7 @@ session = DBSession()
 @app.route('/')
 @app.route('/drinks/')
 def showDrinks():
-  drinks = session.query(DrinkFamily).order_by(asc(DrinkFamily.name))
+  drinks = session.query(DrinkFamily).add_columns(DrinkFamily.name, DrinkFamily.id).order_by(asc(DrinkFamily.name))
   print(drinks)
 #   return "SHOW Drink Family Route!"
   return render_template('main.html', drinks = drinks)
