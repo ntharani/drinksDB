@@ -5,14 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.0/css/bulma.min.css" integrity="sha256-qzwp3+P/LN8/hrx0ourjvGEOgPKNS+YNz7dNhasiRmQ=" crossorigin="anonymous" />
 </head>
 <body>
     <div class="container">
+        {% include "nav.html" %}
         <h1>Main Home Page</h1>
-        <h2>{% for drink in drinks %}
-            {{ drink.name }}
-            {% endfor %}
-        </h2>
+        <hr>
+
+        <div class="columns">
+        <div class="column is-one-third">
+            <p class="notification is-info">Drink Family</p>
+            <nav class="panel">
+            <!-- <a class="panel-block is-active">
+                <span class="panel-icon">
+                <i class="fa fa-book"></i>
+                </span>
+                bulma
+            </a> -->
+                {% for drink in drinks %}
+                <a class="panel-block">
+                    {{ drink.name }}
+                </a>
+                {% endfor %}
+            </nav>            
+        </div>
+        <div class="column">
+            <p>Drink SubTypes and Detail</p>
+        </div>
+        </div>
+        
         {% block content %}
         {% endblock %}
     </div>
