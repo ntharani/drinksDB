@@ -6,35 +6,85 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.5.0/css/bulma.min.css" integrity="sha256-qzwp3+P/LN8/hrx0ourjvGEOgPKNS+YNz7dNhasiRmQ=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+
+    <style>
+    a {
+        text-decoration: none !important;
+    }
+    span.icon.is-right {
+    padding-bottom: 11px !important;
+    }
+
+    .fsd-head {
+        margin-right:-20px;
+    }
+    </style>
+
 </head>
 <body>
     <div class="container">
         {% include "nav.html" %}
 
-
         <hr>
 
         <div class="columns">
-        <div class="column is-one-third">
-            <p class="notification is-info">
-               <a href="/drinks" >Drink Family</a> 
-            </p>
-            <nav class="panel">
-            <!-- <a class="panel-block is-active">
-                <span class="panel-icon">
-                <i class="fa fa-book"></i>
-                </span>
-                bulma
-            </a> -->
-                {% block family %}
 
-                {% endblock %}
+            <div class="column is-one-third">
 
-            </nav>            
-        </div>
-        <div class="column">
-            <p class="notification is-warning">Drink SubTypes and Detail</p>
-            <nav class="panel">
+                <nav class="level notification is-info">
+                    <!-- Left side -->
+                    <div class="level-left">
+                        <p class="level-item">
+                            <a href="/drinks" >Drink Family</a> 
+                        </p>
+                    </div>
+
+                    <!-- Right side -->
+                    <div class="level-right">
+                        <a class="level-item" href="/drinks/new">
+                            <span class="icon fsd-head">
+                            <i class="fa fa-plus"></i>
+                            </span>
+                        </a>
+                    </div>
+                </nav>
+
+                <nav class="panel">
+                <!-- <a class="panel-block is-active">
+                    <span class="panel-icon">
+                    <i class="fa fa-book"></i>
+                    </span>
+                    bulma
+                </a> -->
+                    {% block family %}
+
+                    {% endblock %}
+
+                </nav>            
+            </div>
+        
+            <div class="column">
+
+                <nav class="level notification is-warning">
+                    <!-- Left side -->
+                    <div class="level-left">
+                        <p class="level-item">
+                            Drink SubTypes and Detail
+                        </p>
+                    </div>
+
+                    <!-- Right side -->
+                    <div class="level-right">
+                        <p class="level-item">
+                            <span class="icon fsd-head">
+                            <i class="fa fa-plus"></i>
+                            </span>
+                        </p>
+                    </div>
+                </nav>
+
+                <nav class="panel">
             {% block subtype %}
             {% endblock %}
             </nav>

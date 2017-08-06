@@ -2,14 +2,28 @@
 {% block family %}
     {% for drink in drinks %}
     <a class="panel-block" href="http://localhost:5000/drinks/{{ drink.id }}">
-        {{ drink.name }}
+   
+        <span class="control has-icons-right">
+        <span class="icon is-right">
+            <i class="fa fa-times"></i>
+        </span>
+            {{ drink.name }}
+        </span>    
+
     </a>
     {% endfor %}
 {% endblock %}
 {% block subtype %}
     {% for subdrink in subdrinks %}
     <a class="panel-block" href="{{subdrink.id}}">
+
+        <span class="control has-icons-right">
+      <span class="icon is-right">
+        <i class="fa fa-times"></i>
+      </span>
         {{ subdrink.name }}
+    </span>    
+
     </a>
     {% endfor %}
 {% endblock %}

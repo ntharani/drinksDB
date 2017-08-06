@@ -2,13 +2,37 @@
 {% block family %}
     {% for drink in drinks %}
     <a class="panel-block" href="http://localhost:5000/drinks/{{ drink.id }}">
-        {{ drink.name }}
+ 
+        <span class="control has-icons-right">
+        <span class="icon is-right">
+            <i class="fa fa-times"></i>
+        </span>
+            {{ drink.name }}
+        </span>    
     </a>
     {% endfor %}
 {% endblock %}
 {% block subtype %}
+
+
+    <nav class="level notification">
+        <!-- Left side -->
+        <div class="level-left">
+            <p class="title">{{ drink_detail.name }}</p>
+        </div>
+
+        <!-- Right side -->
+        <div class="level-right">
+            <a class="level-item" href="/drinks/new">
+                <span class="icon fsd-head">
+                <i class="fa fa-times"></i>
+                </span>
+            </a>
+        </div>
+    </nav>
+
     <a class="content" >
-        <h1>{{ drink_detail.name }}</h1>
+
         <hr>
         <p>{{ drink_detail.description }}</p>
     </a>
