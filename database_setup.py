@@ -22,7 +22,8 @@ class DrinkSubType(Base):
 class Drink(Base):
     __tablename__ = 'drink'
 
-    name =Column(String(100), nullable = False)
+    name = Column(String(100), nullable = False)
+    description = Column(String(250), nullable = False)
     id = Column(Integer, primary_key = True)
     drink_subtype_id = Column(Integer,ForeignKey('drink_subtype.id'))
     drink_subtype = relationship(DrinkSubType)
