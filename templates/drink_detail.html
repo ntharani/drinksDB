@@ -7,9 +7,9 @@
     {% endfor %}
 {% endblock %}
 {% block subtype %}
-    {% for drink in drinklist %}
-    <a class="panel-block" href="{{ drink.id }}" >
-        {{ drink.name }}
+    <a class="content" >
+        <h1>{{ drink_detail.name }}</h1>
+        <hr>
+        <p>{{ drink_detail.description }}</p>
     </a>
-    {% endfor %}
 {% endblock %}

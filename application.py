@@ -73,8 +73,6 @@ def showDrinkList(drink_familyURL_id, type_id):
         print(drink)
     return render_template('drink_list_home.html', drinks = drinks, drinklist = drinklist)
     
-    return "SHOW Drink Family SubType Drink List Route!"
-
 #Create a new drink subtype item
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/new/',methods=['GET','POST'])
 def newDrinkList(drink_familyURL_id, type_id):
@@ -93,6 +91,12 @@ def deleteDrinkList(drink_familyURL_id, type_id, drink_id):
 #Show drink subtype brand detail
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/<int:drink_id>/')
 def showDrinkListDetail(drink_familyURL_id, type_id, drink_id):
+    drinks = session.query(DrinkFamily).add_columns(DrinkFamily.name, DrinkFamily.id).order_by(asc(DrinkFamily.name))
+    drink_detail = session.query(Drink).filter_by(id = drink_id ).add_columns(Drink.name, Drink.id, Drink.description).order_by(asc(Drink.name)).first()    
+    for drink in drink_detail:
+        print(drink)
+    return render_template('drink_detail.html', drinks = drinks, drink_detail = drink_detail)
+
     return "SHOW Drink Family SubType Drink List Item Detail Route!"
 
 
