@@ -8,7 +8,7 @@
 {% endblock %}
 {% block subtype %}
     {% for subdrink in subdrinks %}
-    <a class="panel-block">
+    <a class="panel-block" href="{{subdrink.id}}">
         {{ subdrink.name }}
     </a>
     {% endfor %}
