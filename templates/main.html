@@ -10,12 +10,15 @@
 <body>
     <div class="container">
         {% include "nav.html" %}
-        <h1>Main Home Page</h1>
+
+
         <hr>
 
         <div class="columns">
         <div class="column is-one-third">
-            <p class="notification is-info">Drink Family</p>
+            <p class="notification is-info">
+               <a href="/drinks" >Drink Family</a> 
+            </p>
             <nav class="panel">
             <!-- <a class="panel-block is-active">
                 <span class="panel-icon">
@@ -23,20 +26,21 @@
                 </span>
                 bulma
             </a> -->
-                {% for drink in drinks %}
-                <a class="panel-block" href=drinks/{{ drink.id }}>
-                    {{ drink.name }}
-                </a>
-                {% endfor %}
+                {% block family %}
+
+                {% endblock %}
+
             </nav>            
         </div>
         <div class="column">
-            <p>Drink SubTypes and Detail</p>
+            <p class="notification is-warning">Drink SubTypes and Detail</p>
+            <nav class="panel">
+            {% block subtype %}
+            {% endblock %}
+            </nav>
         </div>
         </div>
         
-        {% block content %}
-        {% endblock %}
     </div>
     
 </body>

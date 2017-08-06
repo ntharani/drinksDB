@@ -1,0 +1,15 @@
+{% extends "main.html" %}
+{% block family %}
+    {% for drink in drinks %}
+    <a class="panel-block" href="http://localhost:5000/drinks/{{ drink.id }}">
+        {{ drink.name }}
+    </a>
+    {% endfor %}
+{% endblock %}
+{% block subtype %}
+    {% for subdrink in subdrinks %}
+    <a class="panel-block">
+        {{ subdrink.name }}
+    </a>
+    {% endfor %}
+{% endblock %}

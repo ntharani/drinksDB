@@ -22,7 +22,7 @@ def showDrinks():
   drinks = session.query(DrinkFamily).add_columns(DrinkFamily.name, DrinkFamily.id).order_by(asc(DrinkFamily.name))
   print(drinks)
 #   return "SHOW Drink Family Route!"
-  return render_template('main.html', drinks = drinks)
+  return render_template('drink_family_home.html', drinks = drinks)
 
 #Create a new drink family
 @app.route('/drinks/new/', methods=['GET','POST'])
@@ -42,7 +42,11 @@ def deleteDrink(drink_family_id):
 #Show drink subtypes
 @app.route('/drinks/<int:drink_family_id>/')
 def showDrinkSubType(drink_family_id):
-    return "SHOW Drink Family SubType Route!"
+    drinks = session.query(DrinkFamily).add_columns(DrinkFamily.name, DrinkFamily.id).order_by(asc(DrinkFamily.name))
+    subdrinks = session.query(DrinkSubType).add_columns(DrinkSubType.name, DrinkSubType.id).order_by(asc(DrinkSubType.name))    
+    print(drinks)
+    return render_template('drink_subtype_home.html', drinks = drinks, subdrinks = subdrinks)
+    # return "SHOW Drink Family SubType Route!"
      
 #Create a new drink subtype item
 @app.route('/drinks/<int:drink_family_id>/new/',methods=['GET','POST'])
