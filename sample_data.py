@@ -1,5 +1,5 @@
 """Populates drinks.db with sample.data"""
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
  
 from database_setup import DrinkFamily, DrinkSubType, Drink, Base
@@ -26,14 +26,16 @@ def populate_drink_family(item):
     session.commit()
 
 def populate_beer(item):
-    element = DrinkSubType(name = item, drink_family = DrinkFamily(name="Beer"))
+    beerfamily = session.query(DrinkFamily).filter_by(name = "Beer").first()
+    element = DrinkSubType(name = item, drink_family = beerfamily)
     session.add(element)
     session.commit()
 
 def populate_ale(item):
+    alefamily = session.query(DrinkSubType).filter_by(name = "Ale").first()
     element = Drink(
         name = item["name"], 
-        drink_subtype = DrinkSubType(name="Ale"),
+        drink_subtype = alefamily,
         description = item["description"]
         )
     session.add(element)
@@ -81,3 +83,18 @@ def populate_db():
     print(session.query(Drink.name, Drink.description).all())
 
 populate_db()
+
+print("Drinks Table is")
+abc = session.query(DrinkFamily).order_by(asc(DrinkFamily.name))
+for a in abc:
+    print(a.name)
+
+print("Drinks SubType Table is")
+abc = session.query(DrinkSubType).order_by(asc(DrinkSubType.name))
+for a in abc:
+    print(a.name)
+
+print("Drinks List Table is")
+abc = session.query(Drink).order_by(asc(Drink.name))
+for a in abc:
+    print(a.name)
