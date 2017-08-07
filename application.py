@@ -136,7 +136,7 @@ def showDrinkListDetail(drink_familyURL_id, type_id, drink_id):
     drink_detail = session.query(Drink).filter_by(id = drink_id ).add_columns(Drink.name, Drink.id, Drink.description).order_by(asc(Drink.name)).first()    
     for drink in drink_detail:
         print(drink)
-    return render_template('drink_detail.html', drinks = drinks, drink_detail = drink_detail)
+    return render_template('drink_detail.html', drinks = drinks, drink_detail = drink_detail, type_id = type_id, drink_id = drink_id )
 
     return "SHOW Drink Family SubType Drink List Item Detail Route!"
 
