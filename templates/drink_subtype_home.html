@@ -15,6 +15,11 @@
                     <i class="fa fa-times"></i>
                 </div>
             </a>
+            <a href="http://localhost:5000/drinks/{{ drink.id }}/edit">
+                <div class="lleft">
+                    <i class="fa fa-edit"></i>
+                </div>
+            </a>
         </li>
     {% endfor %}
 {% endblock %}
@@ -32,6 +37,11 @@
             <a href="{{subdrink.id}}/delete">
                 <div class="lleft">
                     <i class="fa fa-times"></i>
+                </div>
+            </a>
+            <a href="{{subdrink.id}}/edit">
+                <div class="lleft">
+                    <i class="fa fa-edit"></i>
                 </div>
             </a>
         </li>

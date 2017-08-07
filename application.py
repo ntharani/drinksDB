@@ -168,9 +168,9 @@ def editDrinkList(drink_familyURL_id, type_id, drink_id):
             session.add(drinkToUpdate)
             session.commit() 
             flash('Successfully Edited %s' % drinkToUpdate.name)
-            return redirect(url_for('showDrinkList', drink_familyURL_id = drink_familyURL_id, type_id = type_id ))
+            return redirect(url_for('showDrinkList', drink_familyURL_id = drink_familyURL_id, type_id = type_id  ))
     else:
-        return render_template('edit_drink_item.html', drinkFamily = drinkToUpdate)
+        return render_template('edit_drink_item.html', drinkToUpdate = drinkToUpdate)
     # return "EDIT Drink Family Subtype Drink List Route!"
 
 #Delete a drink SubType
