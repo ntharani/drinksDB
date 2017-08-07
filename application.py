@@ -49,7 +49,15 @@ def editDrink(drink_familyURL_id):
 #Delete a drink family
 @app.route('/drinks/<int:drink_familyURL_id>/delete/', methods = ['GET','POST'])
 def deleteDrink(drink_familyURL_id):
-    return "DELETE Drink Family Route!"
+    drinkFamilyToDelete = session.query(DrinkFamily).filter_by(id = drink_familyURL_id).first()
+    if request.method == 'POST':
+        session.delete(drinkFamilyToDelete)
+        flash('%s Successfully Deleted' % drinkFamilyToDelete.name)
+        session.commit()
+        return redirect(url_for('showDrinks'))
+    else:
+        return render_template('delete_drink_family.html',drinkFamily = drinkFamilyToDelete)
+    # return "DELETE Drink Family Route!"
 
 #Show drink subtypes
 @app.route('/drinks/<int:drink_familyURL_id>/')
@@ -88,7 +96,15 @@ def editDrinkSubType(drink_familyURL_id, type_id):
 #Delete a drink SubType
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/delete', methods = ['GET','POST'])
 def deleteDrinkSubType(drink_familyURL_id, type_id):
-    return "DELETE Drink Family SubType Route!"
+    drinkSubFamilyToDelete = session.query(DrinkSubType).filter_by(id = type_id).first()
+    if request.method == 'POST':
+        session.delete(drinkSubFamilyToDelete)
+        flash('%s Successfully Deleted' % drinkSubFamilyToDelete.name)
+        session.commit()
+        return redirect(url_for('showDrinkSubType', drink_familyURL_id = drink_familyURL_id))
+    else:
+        return render_template('delete_sub_drink_family.html',subFamily = drinkSubFamilyToDelete)
+    # return "DELETE Drink Family SubType Route!"
 
 #Show drink subtype brands
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/')

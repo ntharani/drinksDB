@@ -1,0 +1,21 @@
+{% extends "main.html" %}
+{% block subtype %}
+<p class="title">Delete {{ drinkFamily.name }}?</p>
+
+<form action="#" method = "post">
+
+    <div class="field">
+        <div class="control">
+        <button class="button is-danger">Delete {{ drinkFamily.name }}</button>
+        </div>
+    </div>
+
+</form>
+
+{% endblock %}
+
+{% block context %}
+    New Drink Family
+{% endblock %}
+{% block context_action %}
+{% endblock %}
