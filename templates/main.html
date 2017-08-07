@@ -29,12 +29,16 @@
         <hr>
 
         <div class = "flash">
-		    {% with messages = get_flashed_messages() %}
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
-          
                     <ul>
-                    {% for message in messages %}
+                    {% for category, message in messages %}
+                        {% if category == "error" %}
+                        <div class="notification is-danger">{{ message }}</div>
+                        {% else %}
                         <div class="notification is-primary">{{ message }}</div>
+                        {% endif %}
                     {% endfor %}
                     </ul>
                 {% endif %}
