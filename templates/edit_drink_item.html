@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+{% block subtype %}
+<p class="title">Drink Details Update</p>
+
+<form action="#" method = "post">
+
+    <div class="field">
+        <label for="name" class="label">Name</label>
+            <div class="control">
+                <input class="input" type="text" value="{{drinkFamily.name}}" maxlength="100" name="name">
+            </div>
+        <p class="help">Try to keep the drink sub family name under 50 characters</p>
+    </div>
+    <div class="field">
+    <label class="label">Description</label>
+    <div class="control">
+        <textarea class="textarea" value="{{drinkFamily.description}}" name="description"></textarea>
+    </div>
+    </div>
+    <div class="field">
+        <div class="control">
+        <button class="button is-primary">Submit</button>
+        </div>
+    </div>
+
+
+</form>
+
+{% endblock %}
+
+{% block context %}
+    Update Drink List Detail
+{% endblock %}
+{% block context_action %}
+{% endblock %}

@@ -44,7 +44,18 @@ def newDrink():
 #Edit a drink family
 @app.route('/drinks/<int:drink_familyURL_id>/edit/', methods = ['GET', 'POST'])
 def editDrink(drink_familyURL_id):
-    return "EDIT Drink Family Route!"
+    drinkFamilyToUpdate = session.query(DrinkFamily).filter_by(id = drink_familyURL_id).first()
+    if request.method == 'POST':
+        if request.form['name']:
+            drinkFamilyToUpdate.name = request.form['name']
+            session.add(drinkFamilyToUpdate)
+            session.commit() 
+            flash('Successfully Edited %s' % drinkFamilyToUpdate.name)
+            return redirect(url_for('showDrinks'))
+    else:
+        return render_template('edit_drink_family.html', drinkFamily = drinkFamilyToUpdate)
+
+    # return "EDIT Drink Family Route!"
 
 #Delete a drink family
 @app.route('/drinks/<int:drink_familyURL_id>/delete/', methods = ['GET','POST'])
@@ -91,7 +102,17 @@ def newDrinkSubType(drink_familyURL_id):
 #Edit a drinkSubType
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/edit', methods=['GET','POST'])
 def editDrinkSubType(drink_familyURL_id, type_id):
-    return "EDIT Drink Family Subtype Route!"
+    subDrinkFamilyToUpdate = session.query(DrinkSubType).filter_by(id = type_id).first()
+    if request.method == 'POST':
+        if request.form['name']:
+            subDrinkFamilyToUpdate.name = request.form['name']
+            session.add(subDrinkFamilyToUpdate)
+            session.commit() 
+            flash('Successfully Edited %s' % subDrinkFamilyToUpdate.name)
+            return redirect(url_for('showDrinkSubType',drink_familyURL_id = drink_familyURL_id ))
+    else:
+        return render_template('edit_sub_drink_family.html', drinkFamily = subDrinkFamilyToUpdate)
+    # return "EDIT Drink Family Subtype Route!"
 
 #Delete a drink SubType
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/delete', methods = ['GET','POST'])
@@ -138,7 +159,19 @@ def newDrinkList(drink_familyURL_id, type_id):
 #Edit a drinkSubType Brand
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/<int:drink_id>/edit', methods=['GET','POST'])
 def editDrinkList(drink_familyURL_id, type_id, drink_id):
-    return "EDIT Drink Family Subtype Drink List Route!"
+    drinkToUpdate = session.query(Drink).filter_by(id = drink_id).first()
+    if request.method == 'POST':
+        if request.form['name']:
+            drinkToUpdate.name = request.form['name']
+        if request.form['description']:
+            drinkToUpdate.description = request.form['description']            
+            session.add(drinkToUpdate)
+            session.commit() 
+            flash('Successfully Edited %s' % drinkToUpdate.name)
+            return redirect(url_for('showDrinkList', drink_familyURL_id = drink_familyURL_id, type_id = type_id ))
+    else:
+        return render_template('edit_drink_item.html', drinkFamily = drinkToUpdate)
+    # return "EDIT Drink Family Subtype Drink List Route!"
 
 #Delete a drink SubType
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/<int:drink_id>/delete', methods = ['GET','POST'])
