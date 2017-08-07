@@ -143,7 +143,15 @@ def editDrinkList(drink_familyURL_id, type_id, drink_id):
 #Delete a drink SubType
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/<int:drink_id>/delete', methods = ['GET','POST'])
 def deleteDrinkList(drink_familyURL_id, type_id, drink_id):
-    return "DELETE Drink Family SubType Drink List Route!"
+    drinkListItemToDelete = session.query(Drink).filter_by(id = drink_id).first()
+    if request.method == 'POST':
+        session.delete(drinkListItemToDelete)
+        flash('%s Successfully Deleted' % drinkListItemToDelete.name)
+        session.commit()
+        return redirect(url_for('showDrinkList', drink_familyURL_id = drink_familyURL_id, type_id = type_id ))
+    else:
+        return render_template('delete_drink_list.html',drink = drinkListItemToDelete)
+    # return "DELETE Drink Family SubType Drink List Route!"
 
 #Show drink subtype brand detail
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/<int:drink_id>/')
