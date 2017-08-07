@@ -104,12 +104,12 @@ def showDrinkList(drink_familyURL_id, type_id):
 #Create a new drink subtype item
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/new/',methods=['GET','POST'])
 def newDrinkList(drink_familyURL_id, type_id):
-    parent_family = session.query(DrinkFamily).filter_by(id = drink_familyURL_id).first()
+    parent_family = session.query(DrinkSubType).filter_by(id = type_id).first()
     if request.method == 'POST':
         if request.form['name'] != "":
-            newSubDrinkFamily = DrinkSubType(name = request.form['name'], drink_family_id = drink_familyURL_id, drink_family = parent_family)
-            session.add(newSubDrinkFamily)
-            flash('New Drink Sub Type %s Successfully Created' % newSubDrinkFamily.name)
+            newDrinkList = Drink(name = request.form['name'], description = request.form['description'],drink_subtype_id = type_id, drink_subtype = parent_family)
+            session.add(newDrinkList)
+            flash('New Drink Sub Type %s Successfully Created' % newDrinkList.name)
             session.commit()
             return redirect(url_for('showDrinkList', drink_familyURL_id = drink_familyURL_id,type_id = type_id))
         else:
