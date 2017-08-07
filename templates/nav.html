@@ -19,9 +19,11 @@
         <div class="field is-grouped">
 
           <p class="control">
-            <a class="button is-primary" href="https://github.com/jgthms/bulma/archive/0.5.0.zip">
-              <span>Login</span>
-            </a>
+            {%if 'username' not in session %}
+			      <a class="button is-primary" href="{{url_for('showLogin')}}"><span>Click Here to Login</span></a>
+			      {% else %}
+			      <a class="button is-info" href="{{url_for('gdisconnect')}}"><span>Logout</span></a>
+			      {% endif %}
           </p>
         </div>
       </div>
