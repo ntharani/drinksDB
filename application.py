@@ -158,7 +158,22 @@ def gdisconnect():
         return response
 
 
-#
+#JSON APIs to view Restaurant Information
+@app.route('/drinks/<int:drink_familyURL_id>/JSON')
+def drinkFamilyJSON(drink_familyURL_id):
+    items = session.query(DrinkSubType).filter_by(drink_family_id = drink_familyURL_id).all()
+    return jsonify(ans=[i.serialize for i in items])
+
+
+@app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/JSON')
+def drinkDetailJSON(drink_familyURL_id, type_id):
+    items = session.query(Drink).filter_by(drink_subtype_id = type_id).all()
+    return jsonify(ans=[i.serialize for i in items])
+
+@app.route('/drinks/JSON')
+def drinksJSON():
+    drinks = session.query(DrinkFamily).all()
+    return jsonify(ans = [r.serialize for r in drinks])
 
 #Show all drinks
 @app.route('/')
