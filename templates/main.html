@@ -46,6 +46,11 @@
         .lleft  i {
             color: #dbdbdb;
         }
+
+        .npadfix {
+            padding: 20px !important;
+        }
+
     </style>
 
 </head>
@@ -55,7 +60,7 @@
 
         <hr>
 
-        <div class = "flash">
+        <div class = "npadfix">
 
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
@@ -74,9 +79,9 @@
         </div>
         <br>
         
-        <div class="columns">
+        <div class="columns is-gapless">
 
-            <div class="column is-one-third">
+            <div class="column is-one-third npadfix">
 
                 <nav class="level notification is-info">
                     <!-- Left side -->
@@ -105,13 +110,12 @@
 
                 <div class="content">
                     {% block family %}
-
                     {% endblock %}
                 </div>
 
             </div>
         
-            <div class="column">
+            <div class="column npadfix">
 
                 <nav class="level notification is-warning">
                     <!-- Left side -->
@@ -122,14 +126,14 @@
                     </div>
 
                     <!-- Right side -->
-
                     {% block context_action %}{% endblock %}
                 </nav>
 
-                <nav class="panel">
-            {% block subtype %}
-            {% endblock %}
-            </nav>
+                <div class="content">
+                    {% block subtype %}
+                    {% endblock %}
+                </div>
+
         </div>
         </div>
         
