@@ -398,7 +398,8 @@ def newDrinkSubType(drink_familyURL_id):
             newSubDrinkFamily = DrinkSubType(
                 name=request.form['name'],
                 drink_family_id=drink_familyURL_id,
-                drink_family=parent_family
+                drink_family=parent_family,
+                user_id=login_session['user_id']
             )
             session.add(newSubDrinkFamily)
             flash('%s Successfully Created' % newSubDrinkFamily.name)
@@ -492,7 +493,8 @@ def newDrinkList(drink_familyURL_id, type_id):
             newDrinkL = Drink(name=request.form['name'],
                               description=request.form['description'],
                               drink_subtype_id=type_id,
-                              drink_subtype=parent_family)
+                              drink_subtype=parent_family,
+                              user_id=login_session['user_id'])
             session.add(newDrinkL)
             flash('%s Successfully Created' % newDrinkL.name)
             session.commit()
@@ -567,16 +569,14 @@ def showDrinkListDetail(drink_familyURL_id, type_id, drink_id):
         User.name.label("username")).order_by(asc(Drink.name)).first()
     print(drink_detail)
     print(type(drink_detail))
-    print(type(drink_detail.keys()))
+    # print(type(drink_detail.keys()))
     print(drink_detail.keys())
-
     return render_template('drink_detail.html',
                            drinks=drinks,
                            drink_detail=drink_detail,
                            type_id=type_id,
                            drink_id=drink_id)
 
-    return "SHOW Drink Family SubType Drink List Item Detail Route!"
 
 
 if __name__ == '__main__':

@@ -38,7 +38,7 @@ class DrinkSubType(Base):
     name =Column(String(100), nullable = False)
     id = Column(Integer, primary_key = True)
     drink_family_id = Column(Integer,ForeignKey('drink_family.id'))
-    drink_family = relationship(DrinkFamily)
+    drink_family = relationship("DrinkFamily", cascade="save-update, merge, delete")
     user_id = Column(Integer,ForeignKey('user.id'))
     user = relationship(User)
 
@@ -59,7 +59,7 @@ class Drink(Base):
     description = Column(String(250), nullable = False)
     id = Column(Integer, primary_key = True)
     drink_subtype_id = Column(Integer,ForeignKey('drink_subtype.id'))
-    drink_subtype = relationship(DrinkSubType)
+    drink_subtype = relationship("DrinkSubType", cascade="save-update, merge, delete")
     user_id = Column(Integer,ForeignKey('user.id'))
     user = relationship(User)
 
