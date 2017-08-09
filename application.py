@@ -577,8 +577,6 @@ def showDrinkListDetail(drink_familyURL_id, type_id, drink_id):
                            type_id=type_id,
                            drink_id=drink_id)
 
-
-
 if __name__ == '__main__':
     app.secret_key = 'super_seotnhoenuhoean34luoaecblecret_key'
     app.debug = True
