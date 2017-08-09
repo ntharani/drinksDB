@@ -50,6 +50,7 @@ def is_owner(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
 
+        # Previous code being turned into a decorator
         # editor = login_session['user_id']
         # owner = drinkFamilyToUpdate.user_id
         # print("Your user id is: ", editor)
@@ -57,7 +58,22 @@ def is_owner(f):
         # if (editor != owner):
         #     flash(('Not authorized to edit %s' % drinkFamilyToUpdate.name),'error')
         #     return redirect(url_for('showDrinks')+str(drink_familyURL_id))
-        flash(("At is owner decorator",kwargs ), "error")
+
+        editor = login_session['user_id']
+
+        # len is lenth of dictionary.
+        print("dictionary kwargs len is: ", len(kwargs))
+        if len(kwargs) == 1:
+            owner = session.query(DrinkFamily).filter_by(id = kwargs["drink_familyURL_id"]).one().user_id
+            print("1, ", owner)
+        if len(kwargs) == 2:
+            owner = session.query(DrinkSubType).filter_by(id = kwargs["type_id"]).one().user_id
+        if len(kwargs) == 3:
+            owner = session.query(Drink).filter_by(id = kwargs["drink_id"]).one().user_id
+        if (owner != editor):  
+            # flash(("At is owner decorator", args, kwargs ), "error")
+            flash(("You can only edit or delete your own entries", args, kwargs ), "error") 
+            return redirect(url_for('showDrinks'))           
         return f(*args, **kwargs)
     return decorated_function
 
@@ -300,13 +316,13 @@ def editDrink(drink_familyURL_id):
     """EDIT REST endpoint"""
     drinkFamilyToUpdate = session.query(DrinkFamily).filter_by(
         id=drink_familyURL_id).first()
-    editor = login_session['user_id']
-    owner = drinkFamilyToUpdate.user_id
-    print("Your user id is: ", editor)
-    print("The objects owner user_id is: ", owner)
-    if (editor != owner):
-        flash(('Not authorized to edit %s' % drinkFamilyToUpdate.name),'error')
-        return redirect(url_for('showDrinks')+str(drink_familyURL_id))
+    # editor = login_session['user_id']
+    # owner = drinkFamilyToUpdate.user_id
+    # print("Your user id is: ", editor)
+    # print("The objects owner user_id is: ", owner)
+    # if (editor != owner):
+    #     flash(('Not authorized to edit %s' % drinkFamilyToUpdate.name),'error')
+        # return redirect(url_for('showDrinks')+str(drink_familyURL_id))
     if (request.method == 'POST' and editor == owner):
         if request.form['name']:
             drinkFamilyToUpdate.name = request.form['name']
@@ -324,6 +340,7 @@ def editDrink(drink_familyURL_id):
 # Delete a drink family
 @app.route('/drinks/<int:drink_familyURL_id>/delete/', methods=['GET', 'POST'])
 @login_required
+@is_owner
 def deleteDrink(drink_familyURL_id):
     """DELETE REST endpoint"""
     drinkFamilyToDelete = session.query(DrinkFamily).filter_by(
@@ -416,6 +433,7 @@ def editDrinkSubType(drink_familyURL_id, type_id):
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/delete',
            methods=['GET', 'POST'])
 @login_required
+@is_owner
 def deleteDrinkSubType(drink_familyURL_id, type_id):
     """DELETE REST endpoint"""
     drinkSubFamilyToDelete = session.query(
@@ -483,6 +501,7 @@ def newDrinkList(drink_familyURL_id, type_id):
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/<int:drink_id>/edit',
            methods=['GET', 'POST'])
 @login_required
+@is_owner
 def editDrinkList(drink_familyURL_id, type_id, drink_id):
     drinkToUpdate = session.query(Drink).filter_by(id=drink_id).first()
     if request.method == 'POST':
@@ -506,6 +525,7 @@ def editDrinkList(drink_familyURL_id, type_id, drink_id):
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/<int:drink_id>/delete',
            methods=['GET', 'POST'])
 @login_required
+@is_owner
 def deleteDrinkList(drink_familyURL_id, type_id, drink_id):
     drinkListItemToDelete = session.query(Drink).filter_by(id=drink_id).first()
     if request.method == 'POST':
