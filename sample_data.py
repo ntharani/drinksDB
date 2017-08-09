@@ -29,7 +29,7 @@ def populate_users(item):
     session.commit()
 
 def populate_drink_family(item):
-    user_i = session.query(User).filter_by(name = "Nagib Tharani").first()
+    user_i = session.query(User).filter_by(name = "Mary Poppins").first()
     print("populate drink method")
     print(user_i.name)
     element = DrinkFamily(name=item, user = user_i)
@@ -37,14 +37,14 @@ def populate_drink_family(item):
     session.commit()
 
 def populate_beer(item):
-    user_i = session.query(User).filter_by(name = "Nagib Tharani").first()
+    user_i = session.query(User).filter_by(name = "Mary Poppins").first()
     beerfamily = session.query(DrinkFamily).filter_by(name = "Beer").first()
     element = DrinkSubType(name = item, drink_family = beerfamily, user = user_i)
     session.add(element)
     session.commit()
 
 def populate_ale(item):
-    user_i = session.query(User).filter_by(name = "Nagib Tharani").first()
+    user_i = session.query(User).filter_by(name = "Mary Poppins").first()
     alefamily = session.query(DrinkSubType).filter_by(name = "Ale").first()
     element = Drink(
         name = item["name"], 
@@ -61,7 +61,7 @@ def populate_db():
     # Drink Families
     users = [
         {
-        "name": "Nagib Tharani",
+        "name": "Mary Poppins",
         "email": "me@nagibtharani.com",
         "picture": "https://secure.gravatar.com/avatar/a36aecb1e7c20dbcc6f37254a0c438d3?s=64"
         }

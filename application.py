@@ -5,7 +5,7 @@ from flask import(Flask, render_template, request, redirect, jsonify,
 
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import DrinkFamily, DrinkSubType, Drink, User,Base
+from database_setup import DrinkFamily, DrinkSubType, Drink, User, Base
 
 from flask import session as login_session
 import random
@@ -34,8 +34,10 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# Decorator Helpers
+
 def login_required(f):
-    @wraps(f)    
+    @wraps(f)
     def decorated_function(*args, **kwargs):
         if "email" in login_session:
             return f(*args, **kwargs)
@@ -44,7 +46,23 @@ def login_required(f):
             return redirect(url_for('showDrinks'))
     return decorated_function
 
+def is_owner(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+
+        # editor = login_session['user_id']
+        # owner = drinkFamilyToUpdate.user_id
+        # print("Your user id is: ", editor)
+        # print("The objects owner user_id is: ", owner)
+        # if (editor != owner):
+        #     flash(('Not authorized to edit %s' % drinkFamilyToUpdate.name),'error')
+        #     return redirect(url_for('showDrinks')+str(drink_familyURL_id))
+        flash(("At is owner decorator",kwargs ), "error")
+        return f(*args, **kwargs)
+    return decorated_function
+
 # oauth / login stuff
+
 @app.route('/login')
 def showLogin():
     """Login Page"""
@@ -127,6 +145,13 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    # see if user exists, if it doesn't make a new one
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+    print("Login Sequence, user_id is: ", login_session['user_id'])
+
     output = '<h1>Welcome, '
     output += login_session['username']
     output += '!</h1>'
@@ -144,6 +169,30 @@ def gconnect():
     print("done!")
     return output
 
+# User Helper Functions
+
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    print("Creating User for: ", login_session['username'] )
+    print(user.id)
+    return user.id
+
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
 
 @app.route('/gdisconnect')
 def gdisconnect():
@@ -181,6 +230,14 @@ def gdisconnect():
 
 
 # JSON APIs to view Restaurant Information
+
+@app.route('/drinks/JSON')
+def drinksJSON():
+    """JSON Endpoint"""
+    drinks = session.query(DrinkFamily).all()
+    return jsonify(ans=[r.serialize for r in drinks])
+
+
 @app.route('/drinks/<int:drink_familyURL_id>/JSON')
 def drinkFamilyJSON(drink_familyURL_id):
     """JSON End Point"""
@@ -196,12 +253,7 @@ def drinkDetailJSON(drink_familyURL_id, type_id):
     return jsonify(ans=[i.serialize for i in items])
 
 
-@app.route('/drinks/JSON')
-def drinksJSON():
-    """JSON Endpoint"""
-    drinks = session.query(DrinkFamily).all()
-    return jsonify(ans=[r.serialize for r in drinks])
-
+# REST Routes
 
 # Show all drinks
 @app.route('/')
@@ -210,7 +262,7 @@ def showDrinks():
     drinks = session.query(DrinkFamily).add_columns(
         DrinkFamily.name,
         DrinkFamily.id).order_by(asc(DrinkFamily.name))
-    print(drinks)
+    # print(drinks)
     # return "SHOW Drink Family Route!"
     return render_template('drink_family_home.html', drinks=drinks)
 
@@ -224,7 +276,9 @@ def newDrink():
     #     return redirect(url_for('showDrinks'))
     if request.method == 'POST':
         if request.form['name'] != "":
-            newDrinkFamily = DrinkFamily(name=request.form['name'])
+            print("Creating a new Drink Family, user_id is:", login_session['user_id'])
+            newDrinkFamily = DrinkFamily(name=request.form['name'],
+                                         user_id=login_session['user_id'])
             session.add(newDrinkFamily)
             flash('New Drink Family %s Successfully Created'
                   % newDrinkFamily.name)
@@ -241,11 +295,19 @@ def newDrink():
 # Edit a drink family
 @app.route('/drinks/<int:drink_familyURL_id>/edit/', methods=['GET', 'POST'])
 @login_required
+@is_owner
 def editDrink(drink_familyURL_id):
     """EDIT REST endpoint"""
     drinkFamilyToUpdate = session.query(DrinkFamily).filter_by(
         id=drink_familyURL_id).first()
-    if request.method == 'POST':
+    editor = login_session['user_id']
+    owner = drinkFamilyToUpdate.user_id
+    print("Your user id is: ", editor)
+    print("The objects owner user_id is: ", owner)
+    if (editor != owner):
+        flash(('Not authorized to edit %s' % drinkFamilyToUpdate.name),'error')
+        return redirect(url_for('showDrinks')+str(drink_familyURL_id))
+    if (request.method == 'POST' and editor == owner):
         if request.form['name']:
             drinkFamilyToUpdate.name = request.form['name']
             session.add(drinkFamilyToUpdate)
@@ -331,6 +393,7 @@ def newDrinkSubType(drink_familyURL_id):
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/edit',
            methods=['GET', 'POST'])
 @login_required
+@is_owner
 def editDrinkSubType(drink_familyURL_id, type_id):
     """EDIT REST endpoint"""
     subDrinkFamilyToUpdate = session.query(
@@ -464,13 +527,13 @@ def showDrinkListDetail(drink_familyURL_id, type_id, drink_id):
     drinks = session.query(DrinkFamily).add_columns(
         DrinkFamily.name,
         DrinkFamily.id).order_by(asc(DrinkFamily.name))
-    drink_detail = session.query(Drink).filter_by(id=drink_id).add_columns(
+    drink_detail = session.query(Drink).filter_by(id=drink_id).join(User).add_columns(
         Drink.name, Drink.id, Drink.description, User.name.label("username")).order_by(asc(Drink.name)).first()
     print(drink_detail)
     print(type(drink_detail))
     print(type(drink_detail.keys()))
     print(drink_detail.keys())
-    
+
     return render_template('drink_detail.html',
                            drinks=drinks,
                            drink_detail=drink_detail,
@@ -481,6 +544,6 @@ def showDrinkListDetail(drink_familyURL_id, type_id, drink_id):
 
 
 if __name__ == '__main__':
-    app.secret_key = 'super_seotnhoenuhoeanuhoaenuh  au3242134luoaecblecret_key'
+    app.secret_key = 'super_seotnhoenuhoean34luoaecblecret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
