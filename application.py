@@ -5,7 +5,7 @@ from flask import(Flask, render_template, request, redirect, jsonify,
 
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
-from database_setup import DrinkFamily, DrinkSubType, Drink, Base
+from database_setup import DrinkFamily, DrinkSubType, Drink, User,Base
 
 from flask import session as login_session
 import random
@@ -465,9 +465,12 @@ def showDrinkListDetail(drink_familyURL_id, type_id, drink_id):
         DrinkFamily.name,
         DrinkFamily.id).order_by(asc(DrinkFamily.name))
     drink_detail = session.query(Drink).filter_by(id=drink_id).add_columns(
-        Drink.name, Drink.id, Drink.description).order_by(asc(Drink.name)).first()
-    for drink in drink_detail:
-        print(drink)
+        Drink.name, Drink.id, Drink.description, User.name.label("username")).order_by(asc(Drink.name)).first()
+    print(drink_detail)
+    print(type(drink_detail))
+    print(type(drink_detail.keys()))
+    print(drink_detail.keys())
+    
     return render_template('drink_detail.html',
                            drinks=drinks,
                            drink_detail=drink_detail,

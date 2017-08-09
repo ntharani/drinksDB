@@ -37,11 +37,13 @@
         </div>
     </nav>
 
-    <a class="content" >
+    <p class="content" >
 
         <hr>
         <p>{{ drink_detail.description }}</p>
-    </a>
+        <p><i>Submitted By: </i>{{ drink_detail.username }}</p>
+
+    </p>
 {% endblock %}
 {% block context %}
     Drink Details

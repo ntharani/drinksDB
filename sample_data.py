@@ -2,7 +2,7 @@
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
  
-from database_setup import DrinkFamily, DrinkSubType, Drink, Base
+from database_setup import DrinkFamily, DrinkSubType, Drink, User, Base
 
 engine = create_engine('sqlite:///drinks.db')
 # Bind the engine to the metadata of the Base class so that the
@@ -19,24 +19,38 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
+def populate_users(item):
+    element = User(
+        name = item["name"],
+        email = item["email"],
+        picture = item["picture"]
+    )
+    session.add(element)
+    session.commit()
 
 def populate_drink_family(item):
-    element = DrinkFamily(name = item)
+    user_i = session.query(User).filter_by(name = "Nagib Tharani").first()
+    print("populate drink method")
+    print(user_i.name)
+    element = DrinkFamily(name=item, user = user_i)
     session.add(element)
     session.commit()
 
 def populate_beer(item):
+    user_i = session.query(User).filter_by(name = "Nagib Tharani").first()
     beerfamily = session.query(DrinkFamily).filter_by(name = "Beer").first()
-    element = DrinkSubType(name = item, drink_family = beerfamily)
+    element = DrinkSubType(name = item, drink_family = beerfamily, user = user_i)
     session.add(element)
     session.commit()
 
 def populate_ale(item):
+    user_i = session.query(User).filter_by(name = "Nagib Tharani").first()
     alefamily = session.query(DrinkSubType).filter_by(name = "Ale").first()
     element = Drink(
         name = item["name"], 
         drink_subtype = alefamily,
-        description = item["description"]
+        description = item["description"],
+        user = user_i
         )
     session.add(element)
     session.commit()
@@ -45,6 +59,13 @@ def populate_ale(item):
 def populate_db():
 
     # Drink Families
+    users = [
+        {
+        "name": "Nagib Tharani",
+        "email": "me@nagibtharani.com",
+        "picture": "https://secure.gravatar.com/avatar/a36aecb1e7c20dbcc6f37254a0c438d3?s=64"
+        }
+    ]
     drinks_family_data = ["Beer", "Wine", "Mixers", "Spirits", "Cocktails","Other"]
     beers_data = ["Ale", "Stout", "Lager"]
     ale_data = [
@@ -60,6 +81,13 @@ def populate_db():
         }
     ]
     wine_data = ["Merlot", "Cabernet Sauvingion","Chardonnay"]
+
+    for user in users:
+        populate_users(user)
+
+    print("Done Users!")
+    print(session.new)
+    print(session.query(User.name).all())
 
     for drink in drinks_family_data:
         populate_drink_family(drink)
@@ -85,9 +113,9 @@ def populate_db():
 populate_db()
 
 print("Drinks Table is")
-abc = session.query(DrinkFamily).order_by(asc(DrinkFamily.name))
+abc = session.query(DrinkFamily).join(User).order_by(asc(DrinkFamily.name))
 for a in abc:
-    print(a.name)
+    print('drinks table is %s %s') % (a.name, a.user_id)
 
 print("Drinks SubType Table is")
 abc = session.query(DrinkSubType).order_by(asc(DrinkSubType.name))
@@ -95,6 +123,6 @@ for a in abc:
     print(a.name)
 
 print("Drinks List Table is")
-abc = session.query(Drink).order_by(asc(Drink.name))
-for a in abc:
-    print(a.name)
+abc = session.query(Drink).join(User).add_columns(User.name).order_by(asc(Drink.name))
+for drink, user in abc:
+    print(drink.name, user)
