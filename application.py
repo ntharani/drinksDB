@@ -36,6 +36,7 @@ session = DBSession()
 
 # Decorator Helpers
 
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -46,38 +47,46 @@ def login_required(f):
             return redirect(url_for('showDrinks'))
     return decorated_function
 
+
 def is_owner(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
 
-        # Previous code being turned into a decorator
-        # editor = login_session['user_id']
-        # owner = drinkFamilyToUpdate.user_id
-        # print("Your user id is: ", editor)
-        # print("The objects owner user_id is: ", owner)
-        # if (editor != owner):
-        #     flash(('Not authorized to edit %s' % drinkFamilyToUpdate.name),'error')
-        #     return redirect(url_for('showDrinks')+str(drink_familyURL_id))
+        """
+        Previous code being turned into a decorator
+        editor = login_session['user_id']
+        owner = drinkFamilyToUpdate.user_id
+        print("Your user id is: ", editor)
+        print("The objects owner user_id is: ", owner)
+        if (editor != owner):
+            flash(('Not authorized to edit %s' % drinkFamilyToUpdate.name),'error')
+            return redirect(url_for('showDrinks')+str(drink_familyURL_id))
+        """
 
         editor = login_session['user_id']
 
         # len is lenth of dictionary.
         print("dictionary kwargs len is: ", len(kwargs))
         if len(kwargs) == 1:
-            owner = session.query(DrinkFamily).filter_by(id = kwargs["drink_familyURL_id"]).one().user_id
+            owner = session.query(DrinkFamily).filter_by(
+                id=kwargs["drink_familyURL_id"]).one().user_id
             print("1, ", owner)
         if len(kwargs) == 2:
-            owner = session.query(DrinkSubType).filter_by(id = kwargs["type_id"]).one().user_id
+            owner = session.query(DrinkSubType).filter_by(
+                id=kwargs["type_id"]).one().user_id
         if len(kwargs) == 3:
-            owner = session.query(Drink).filter_by(id = kwargs["drink_id"]).one().user_id
-        if (owner != editor):  
+            owner = session.query(Drink).filter_by(
+                id=kwargs["drink_id"]).one().user_id
+        if (owner != editor):
             # flash(("At is owner decorator", args, kwargs ), "error")
-            flash(("You can only edit or delete your own entries", args, kwargs ), "error") 
-            return redirect(url_for('showDrinks'))           
+            flash(("You can only edit or delete your own entries",
+                  args, kwargs), "error")
+            return redirect(url_for('showDrinks'))
         return f(*args, **kwargs)
     return decorated_function
 
 # oauth / login stuff
+
 
 @app.route('/login')
 def showLogin():
@@ -187,13 +196,14 @@ def gconnect():
 
 # User Helper Functions
 
+
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
     session.add(newUser)
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()
-    print("Creating User for: ", login_session['username'] )
+    print("Creating User for: ", login_session['username'])
     print(user.id)
     return user.id
 
@@ -209,6 +219,7 @@ def getUserID(email):
         return user.id
     except:
         return None
+
 
 @app.route('/gdisconnect')
 def gdisconnect():
@@ -292,7 +303,8 @@ def newDrink():
     #     return redirect(url_for('showDrinks'))
     if request.method == 'POST':
         if request.form['name'] != "":
-            print("Creating a new Drink Family, user_id is:", login_session['user_id'])
+            print("Creating a new Drink Family, user_id is:",
+                  login_session['user_id'])
             newDrinkFamily = DrinkFamily(name=request.form['name'],
                                          user_id=login_session['user_id'])
             session.add(newDrinkFamily)
@@ -322,7 +334,7 @@ def editDrink(drink_familyURL_id):
     # print("The objects owner user_id is: ", owner)
     # if (editor != owner):
     #     flash(('Not authorized to edit %s' % drinkFamilyToUpdate.name),'error')
-        # return redirect(url_for('showDrinks')+str(drink_familyURL_id))
+    #     return redirect(url_for('showDrinks')+str(drink_familyURL_id))
     if (request.method == 'POST' and editor == owner):
         if request.form['name']:
             drinkFamilyToUpdate.name = request.form['name']
@@ -547,8 +559,12 @@ def showDrinkListDetail(drink_familyURL_id, type_id, drink_id):
     drinks = session.query(DrinkFamily).add_columns(
         DrinkFamily.name,
         DrinkFamily.id).order_by(asc(DrinkFamily.name))
-    drink_detail = session.query(Drink).filter_by(id=drink_id).join(User).add_columns(
-        Drink.name, Drink.id, Drink.description, User.name.label("username")).order_by(asc(Drink.name)).first()
+    drink_detail = session.query(Drink).filter_by(
+        id=drink_id).join(User).add_columns(
+        Drink.name,
+        Drink.id,
+        Drink.description,
+        User.name.label("username")).order_by(asc(Drink.name)).first()
     print(drink_detail)
     print(type(drink_detail))
     print(type(drink_detail.keys()))
