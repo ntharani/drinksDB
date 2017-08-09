@@ -15,8 +15,11 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
 import json
+from functools import wraps, partial, update_wrapper
 from flask import make_response
 import requests
+
+from functools import wraps, partial, WRAPPER_ASSIGNMENTS
 
 app = Flask(__name__)
 
@@ -31,6 +34,15 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+def login_required(f):
+    @wraps(f)    
+    def decorated_function(*args, **kwargs):
+        if "email" in login_session:
+            return f(*args, **kwargs)
+        else:
+            flash("Need to login first", "error")
+            return redirect(url_for('showDrinks'))
+    return decorated_function
 
 # oauth / login stuff
 @app.route('/login')
@@ -205,10 +217,11 @@ def showDrinks():
 
 # Create a new drink family
 @app.route('/drinks/new/', methods=['GET', 'POST'])
+@login_required
 def newDrink():
-    if 'username' not in login_session:
-        flash('You need to login first', 'error')
-        return redirect(url_for('showDrinks'))
+    # if 'username' not in login_session:
+    #     flash('You need to login first', 'error')
+    #     return redirect(url_for('showDrinks'))
     if request.method == 'POST':
         if request.form['name'] != "":
             newDrinkFamily = DrinkFamily(name=request.form['name'])
@@ -227,11 +240,9 @@ def newDrink():
 
 # Edit a drink family
 @app.route('/drinks/<int:drink_familyURL_id>/edit/', methods=['GET', 'POST'])
+@login_required
 def editDrink(drink_familyURL_id):
     """EDIT REST endpoint"""
-    if 'username' not in login_session:
-        flash('You need to login first', 'error')
-        return redirect(url_for('showDrinks'))
     drinkFamilyToUpdate = session.query(DrinkFamily).filter_by(
         id=drink_familyURL_id).first()
     if request.method == 'POST':
@@ -250,11 +261,9 @@ def editDrink(drink_familyURL_id):
 
 # Delete a drink family
 @app.route('/drinks/<int:drink_familyURL_id>/delete/', methods=['GET', 'POST'])
+@login_required
 def deleteDrink(drink_familyURL_id):
     """DELETE REST endpoint"""
-    if 'username' not in login_session:
-        flash('You need to login first', 'error')
-        return redirect(url_for('showDrinks'))
     drinkFamilyToDelete = session.query(DrinkFamily).filter_by(
         id=drink_familyURL_id).first()
     if request.method == 'POST':
@@ -288,11 +297,9 @@ def showDrinkSubType(drink_familyURL_id):
 
 # Create a new drink subtype item
 @app.route('/drinks/<int:drink_familyURL_id>/new/', methods=['GET', 'POST'])
+@login_required
 def newDrinkSubType(drink_familyURL_id):
     """NEW REST endpoint"""
-    if 'username' not in login_session:
-        flash('You need to login first', 'error')
-        return redirect(url_for('showDrinks'))
     parent_family = session.query(DrinkFamily).filter_by(
         id=drink_familyURL_id).first()
     if request.method == 'POST':
@@ -323,11 +330,9 @@ def newDrinkSubType(drink_familyURL_id):
 # Edit a drinkSubType
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/edit',
            methods=['GET', 'POST'])
+@login_required
 def editDrinkSubType(drink_familyURL_id, type_id):
     """EDIT REST endpoint"""
-    if 'username' not in login_session:
-        flash('You need to login first', 'error')
-        return(redirect(url_for('showDrinks')))
     subDrinkFamilyToUpdate = session.query(
         DrinkSubType).filter_by(id=type_id).first()
     if request.method == 'POST':
@@ -347,11 +352,9 @@ def editDrinkSubType(drink_familyURL_id, type_id):
 # Delete a drink SubType
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/delete',
            methods=['GET', 'POST'])
+@login_required
 def deleteDrinkSubType(drink_familyURL_id, type_id):
     """DELETE REST endpoint"""
-    if 'username' not in login_session:
-        flash('You need to login first', 'error')
-        return redirect(url_for('showDrinks'))
     drinkSubFamilyToDelete = session.query(
         DrinkSubType).filter_by(id=type_id).first()
     if request.method == 'POST':
@@ -388,6 +391,7 @@ def showDrinkList(drink_familyURL_id, type_id):
 # Create a new drink subtype item
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/new/',
            methods=['GET', 'POST'])
+@login_required
 def newDrinkList(drink_familyURL_id, type_id):
     parent_family = session.query(DrinkSubType).filter_by(id=type_id).first()
     if request.method == 'POST':
@@ -415,10 +419,8 @@ def newDrinkList(drink_familyURL_id, type_id):
 # Edit a drinkSubType Brand
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/<int:drink_id>/edit',
            methods=['GET', 'POST'])
+@login_required
 def editDrinkList(drink_familyURL_id, type_id, drink_id):
-    if 'username' not in login_session:
-        flash('You need to login first', 'error')
-        return(redirect(url_for('showDrinks')))
     drinkToUpdate = session.query(Drink).filter_by(id=drink_id).first()
     if request.method == 'POST':
         if request.form['name']:
@@ -440,10 +442,8 @@ def editDrinkList(drink_familyURL_id, type_id, drink_id):
 # Delete a drink SubType
 @app.route('/drinks/<int:drink_familyURL_id>/<int:type_id>/<int:drink_id>/delete',
            methods=['GET', 'POST'])
+@login_required
 def deleteDrinkList(drink_familyURL_id, type_id, drink_id):
-    if 'username' not in login_session:
-        flash('You need to login first', 'error')
-        return(redirect(url_for('showDrinks')))
     drinkListItemToDelete = session.query(Drink).filter_by(id=drink_id).first()
     if request.method == 'POST':
         session.delete(drinkListItemToDelete)
