@@ -1,0 +1,9 @@
+RoadMap To Do:
+
+1. CSRF Tokens - Add and Incorporate
+2. Facebook Login
+3. Social Page Formatting. Does it need to be on a different page?
+4. Active Class Logic on Page use Bulma Highlight (Bulma)
+5. Database Integrity & Cascades with SQLAlchemy.. Dive deeper on this.
+6. Do this with PostgreSQL, or Google SQL equivalent...
+7. Try the Web UI with Framework7.io
