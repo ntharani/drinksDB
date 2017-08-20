@@ -76,7 +76,8 @@ class Drink(Base):
    
 
 
-engine = create_engine('sqlite:///drinks.db')
- 
+# engine = create_engine('sqlite:///drinks.db')
+engine = create_engine('postgresql://catalog:udacityNagib@localhost/ndrinks')
+
 
 Base.metadata.create_all(engine)

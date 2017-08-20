@@ -28,7 +28,9 @@ CLIENT_ID = json.loads(
 APPLICATION_NAME = "The Drinks Category App"
 
 # Connect to Database and create database session
-engine = create_engine('sqlite:///drinks.db')
+#engine = create_engine('sqlite:///drinks.db')
+engine = create_engine('postgresql://catalog:udacityNagib@localhost/ndrinks')
+
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
