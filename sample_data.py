@@ -4,7 +4,9 @@ from sqlalchemy.orm import sessionmaker
  
 from database_setup import DrinkFamily, DrinkSubType, Drink, User, Base
 
-engine = create_engine('sqlite:///drinks.db')
+#engine = create_engine('sqlite:///drinks.db')
+engine = create_engine('postgresql://catalog:udacityNagib@localhost/ndrinks')
+
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
 Base.metadata.bind = engine
