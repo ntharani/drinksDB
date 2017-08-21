@@ -26,6 +26,8 @@ secret_file = os.path.join(THIS_FOLDER, 'client_secrets.json')
 from functools import wraps, partial, WRAPPER_ASSIGNMENTS
 
 app = Flask(__name__)
+app.secret_key = 'super_seotnhoenuhoean34luoaecblecret_key'
+
 
 CLIENT_ID = json.loads(
     open(secret_file, 'r').read())['web']['client_id']
