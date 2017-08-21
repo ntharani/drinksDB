@@ -1,7 +1,7 @@
 """ Database Setup Routine """
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy import create_engine
 
 Base = declarative_base()
@@ -37,8 +37,8 @@ class DrinkSubType(Base):
 
     name =Column(String(100), nullable = False)
     id = Column(Integer, primary_key = True)
-    drink_family_id = Column(Integer,ForeignKey('drink_family.id'))
-    drink_family = relationship("DrinkFamily", cascade="save-update, merge, delete")
+    drink_family_id = Column(Integer,ForeignKey('drink_family.id', ondelete='CASCADE'))
+    drink_family = relationship("DrinkFamily", backref=backref('drink_subtype', passive_deletes=True))
     user_id = Column(Integer,ForeignKey('user.id'))
     user = relationship(User)
 
@@ -58,8 +58,8 @@ class Drink(Base):
     name = Column(String(100), nullable = False)
     description = Column(String(250), nullable = False)
     id = Column(Integer, primary_key = True)
-    drink_subtype_id = Column(Integer,ForeignKey('drink_subtype.id'))
-    drink_subtype = relationship("DrinkSubType", cascade="save-update, merge, delete")
+    drink_subtype_id = Column(Integer,ForeignKey('drink_subtype.id', ondelete='CASCADE'))
+    drink_subtype = relationship("DrinkSubType", backref=backref('drink', passive_deletes=True))
     user_id = Column(Integer,ForeignKey('user.id'))
     user = relationship(User)
 
