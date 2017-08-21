@@ -206,14 +206,14 @@ def gconnect():
 
 
 def createUser(login_session):
-    newUser = "User"(name=login_session['username'], email=login_session[
+    newUser = User(name=login_session['username'], email=login_session[
                    'email'], picture=login_session['picture'])
     session.add(newUser)
     session.commit()
-    user = session.query("User").filter_by(email=login_session['email']).one()
+    user = session.query(User).filter_by(email=login_session['email']).one()
     print("Creating User for: ", login_session['username'])
-    print("user".id)
-    return "user".id
+    print(user.id)
+    return user.id
 
 
 def getUserInfo(user_id):
@@ -343,7 +343,7 @@ def editDrink(drink_familyURL_id):
     # if (editor != owner):
     #     flash(('Not authorized to edit %s' % drinkFamilyToUpdate.name),'error')
     #     return redirect(url_for('showDrinks')+str(drink_familyURL_id))
-    if (request.method == 'POST' and editor == owner):
+    if (request.method == 'POST'):
         if request.form['name']:
             drinkFamilyToUpdate.name = request.form['name']
             session.add(drinkFamilyToUpdate)
@@ -531,12 +531,12 @@ def editDrinkList(drink_familyURL_id, type_id, drink_id):
             drinkToUpdate.name = request.form['name']
         if request.form['description']:
             drinkToUpdate.description = request.form['description']
-            session.add(drinkToUpdate)
-            session.commit()
-            flash('Successfully Edited %s' % drinkToUpdate.name)
-            return redirect(url_for('showDrinkList',
-                                    drink_familyURL_id=drink_familyURL_id,
-                                    type_id=type_id))
+        session.add(drinkToUpdate)
+        session.commit()
+        flash('Successfully Edited %s' % drinkToUpdate.name)
+        return redirect(url_for('showDrinkList',
+                                drink_familyURL_id=drink_familyURL_id,
+                                type_id=type_id))
     else:
         return render_template('edit_drink_item.html',
                                drinkToUpdate=drinkToUpdate)
