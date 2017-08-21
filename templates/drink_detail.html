@@ -3,16 +3,24 @@
     {% for drink in drinks %}
         <li class="listN">
             <!-- Left side -->
-            <a class="xxy" href="http://localhost:5000/drinks/{{ drink.id }}">  
+            <a class="xxy" href="{{ url_for('showDrinkSubType', drink_familyURL_id=drink.id) }}">  
                 <div class="lleft">
                     {{ drink.name }}
                 </div>
-
             </a>
             <!-- Right side -->
-            <a href="http://localhost:5000/drinks/{{ drink.id }}/delete">
+            <a href="#">
                 <div class="lleft">
+                    <a href="{{ url_for('deleteDrink', drink_familyURL_id=drink.id) }}">
                     <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </a>
+            <a href="#">
+                <div class="lleft">
+                    <a href="{{ url_for('editDrink', drink_familyURL_id=drink.id) }}">
+                    <i class="fa fa-edit"></i>
+                    </a>
                 </div>
             </a>
         </li>
