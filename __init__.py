@@ -570,11 +570,11 @@ def showDrinkListDetail(drink_familyURL_id, type_id, drink_id):
         DrinkFamily.name,
         DrinkFamily.id).order_by(asc(DrinkFamily.name))
     drink_detail = session.query(Drink).filter_by(
-        id=drink_id).join("User").add_columns(
+        id=drink_id).join(User).add_columns(
         Drink.name,
         Drink.id,
         Drink.description,
-        "User".name.label("username")).order_by(asc(Drink.name)).first()
+        User.name.label("username")).order_by(asc(Drink.name)).first()
     print(drink_detail)
     print(type(drink_detail))
     # print(type(drink_detail.keys()))
